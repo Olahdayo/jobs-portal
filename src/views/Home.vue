@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Search Section -->
+    <!-- This is the search bar that sticks to the top when scrolling -->
     <section class="search-section bg-light sticky-top">
       <div class="container">
         <div class="row justify-content-center">
@@ -20,7 +20,7 @@
                       v-model="searchFilters.query"
                     />
                   </div>
-                  <div class="col-md-3 d-none d-md-block">
+                  <div class="col-md-2 d-none d-md-block">
                     <select
                       class="form-select form-select-sm"
                       v-model="searchFilters.location"
@@ -65,7 +65,7 @@
                       </option>
                     </select>
                   </div>
-                  <div class="col-md-2 d-none d-md-block">
+                  <div class="col-md-2 d-none d-md-block position-relative">
                     <select
                       class="form-select form-select-sm"
                       v-model="searchFilters.jobType"
@@ -79,21 +79,32 @@
                         {{ type }}
                       </option>
                     </select>
-                  </div>
-                  <div class="col-12 col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                      <i class="bi bi-search me-2"></i>Search
+                    <button 
+                      type="submit" 
+                      class="btn btn-primary rounded-circle position-absolute top-50 translate-middle-y"
+                      style="width: 32px; height: 32px; right: -40px;"
+                    >
+                      <i class="bi bi-search"></i>
                     </button>
                   </div>
                   <!-- Mobile Filter Button -->
                   <div class="col-12 d-md-none mt-1">
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary w-100"
-                      @click="showMobileFilters = true"
-                    >
-                      <i class="bi bi-funnel me-2"></i>More Filters
-                    </button>
+                    <div class="d-flex gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-primary rounded-circle flex-shrink-0"
+                        style="width: 35px; height: 35px;"
+                      >
+                        <i class="bi bi-search"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary flex-grow-1"
+                        @click="showMobileFilters = true"
+                      >
+                        <i class="bi bi-funnel me-2"></i>More Filters
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -103,7 +114,7 @@
       </div>
     </section>
 
-    <!-- Mobile Filters Modal -->
+    <!-- This popup shows extra filters on mobile - helps save space! -->
     <div
       class="modal fade"
       id="mobileFiltersModal"
@@ -171,79 +182,145 @@
       </div>
     </div>
 
-    <!-- Featured Jobs -->
-    <section class="py-5">
-      <div class="container">
-        <h2 class="mb-4">Featured Jobs</h2>
-        <div class="row">
-          <div class="col-md-4 mb-4" v-for="job in featuredJobs" :key="job.id">
-            <div class="card h-100">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                  <img
-                    :src="job.companyLogo"
-                    alt="Company Logo"
-                    class="company-logo me-3"
-                  />
-                  <div>
-                    <h5 class="card-title mb-1">{{ job.title }}</h5>
-                    <h6 class="text-muted">{{ job.company }}</h6>
+    <div class="container py-5">
+      <div class="row">
+        <!-- Left side - where all the jobs are shown -->
+        <div class="col-lg-8">
+          <!-- VIP Jobs - These are the special featured ones -->
+          <section class="mb-5">
+            <div class="featured-jobs-container border rounded-3 bg-white p-4">
+              <div class="mb-4">
+                <h2 class="m-0">Featured Jobs</h2>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6" v-for="job in featuredJobs" :key="job.id">
+                  <div class="job-card border-0 shadow-sm p-3 bg-white">
+                    <div class="d-flex align-items-start gap-3">
+                      <img
+                        :src="job.companyLogo"
+                        alt="Company Logo"
+                        class="company-logo flex-shrink-0"
+                        width="40"
+                        height="40"
+                      />
+                      <div>
+                        <h5 class="mb-1">{{ job.title }}</h5>
+                        <p class="text-muted mb-2 small">{{ job.company }}</p>
+                        <div class="d-flex gap-2">
+                          <span class="badge bg-light text-dark">{{ job.location }}</span>
+                          <span class="badge bg-light text-dark">{{ job.type }}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <p class="card-text">{{ job.description }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge bg-light text-dark">{{
-                    job.location
-                  }}</span>
-                  <span class="text-primary">{{ job.salary }}/year</span>
-                </div>
+              </div>
+              <div class="text-center mt-4 pt-3 border-top">
+                <router-link to="/featured-jobs" class="btn btn-outline-primary">
+                  See All Featured Jobs
+                </router-link>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          </section>
 
-    <!-- Latest Jobs -->
-    <section class="py-5 bg-light">
-      <div class="container">
-        <h2 class="mb-4">Latest Jobs</h2>
-        <div class="row">
-          <div class="col-md-6 mb-4" v-for="job in latestJobs" :key="job.id">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <h5 class="card-title">{{ job.title }}</h5>
-                    <h6 class="text-muted">{{ job.company }}</h6>
+          <!-- Fresh Jobs - Shows the most recent postings -->
+          <section>
+            <h2 class="mb-4">Latest Jobs</h2>
+            <div class="row g-3">
+              <div class="col-12" v-for="job in latestJobs" :key="job.id">
+                <div class="job-card border-0 shadow-sm p-4 bg-white">
+                  <div class="d-flex align-items-start gap-4">
+                    <img
+                      :src="job.companyLogo"
+                      alt="Company Logo"
+                      class="company-logo flex-shrink-0"
+                      width="60"
+                      height="60"
+                    />
+                    <div>
+                      <h5 class="mb-1">{{ job.title }}</h5>
+                      <p class="text-muted mb-2 small">{{ job.company }}</p>
+                      <p class="text-muted mb-2 small">
+                        <i class="bi bi-calendar3 me-2"></i>
+                        {{ formatJobDate(job.postedDate) }}
+                      </p>
+                      <p class="mb-3">{{ job.description }}</p>
+                      <div class="d-flex gap-2">
+                        <span class="badge bg-light text-dark">{{ job.location }}</span>
+                        <span class="badge bg-light text-dark">{{ job.type }}</span>
+                        <span class="badge bg-light text-dark">{{ job.salary }}/year</span>
+                      </div>
+                      <div class="mt-3">
+                        <router-link 
+                          :to="'/jobs/' + job.id" 
+                          class="btn btn-outline-primary btn-sm"
+                        >
+                          View Details
+                        </router-link>
+                      </div>
+                    </div>
                   </div>
-                  <img
-                    :src="job.companyLogo"
-                    alt="Company Logo"
-                    class="company-logo"
-                  />
                 </div>
-                <p class="card-text mt-3">{{ job.description }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="badge bg-light text-dark me-2">{{
-                      job.location
-                    }}</span>
-                    <span class="badge bg-light text-dark">{{ job.type }}</span>
-                  </div>
-                  <router-link
-                    :to="'/jobs/' + job.id"
-                    class="btn btn-outline-primary btn-sm"
-                  >
-                    View Details
-                  </router-link>
-                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right side - Quick stats and filters -->
+        <div class="col-lg-4">
+          <div class="sticky-sidebar custom-scrollbar">
+            <!-- Super fresh jobs - Just posted! -->
+            <div class="sidebar-widget mb-4">
+              <h4 class="mb-3">Recent Postings</h4>
+              <div class="list-group">
+                <a 
+                  v-for="job in recentPostings" 
+                  :key="job.id"
+                  href="#" 
+                  class="list-group-item list-group-item-action border-0 mb-2 rounded"
+                >
+                  <h6 class="mb-1">{{ job.title }}</h6>
+                  <p class="mb-1 small text-muted">{{ job.company }}</p>
+                  <small class="text-muted">Posted {{ formatDate(job.postedDate) }}</small>
+                </a>
+              </div>
+            </div>
+
+            <!-- Jobs grouped by states - helps find local work -->
+            <div class="sidebar-widget mb-4">
+              <h4 class="mb-3">Jobs by State</h4>
+              <div class="list-group">
+                <a 
+                  v-for="(count, state) in jobsByState" 
+                  :key="state"
+                  href="#" 
+                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
+                >
+                  {{ state }}
+                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Most popular job types - what's hot right now -->
+            <div class="sidebar-widget">
+              <h4 class="mb-3">Popular Categories</h4>
+              <div class="list-group">
+                <a 
+                  v-for="(count, field) in jobsByField" 
+                  :key="field"
+                  href="#" 
+                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
+                >
+                  {{ field }}
+                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -254,6 +331,7 @@ export default {
   name: "Home",
   data() {
     return {
+      // These are the filters users can play with to find their perfect job
       searchFilters: {
         query: "",
         location: "",
@@ -261,29 +339,74 @@ export default {
         education: "",
         jobType: "",
       },
+      // Controls if the mobile filter menu is showing or not
       showMobileFilters: false,
     };
   },
   computed: {
+    // Grabs the special featured jobs - limited to 6 to keep it snappy
     featuredJobs() {
       return this.jobsStore.getFeaturedJobs();
     },
+    // Gets the newest jobs - fresh off the press!
     latestJobs() {
       return this.jobsStore.getLatestJobs();
     },
+    // Super fresh jobs for the sidebar - just the last 5
+    recentPostings() {
+      return [...this.jobsStore.jobs]
+        .sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate))
+        .slice(0, 5);
+    },
+    // Counts how many jobs we have in each state
+    jobsByState() {
+      return this.jobsStore.jobs.reduce((acc, job) => {
+        acc[job.location] = (acc[job.location] || 0) + 1;
+        return acc;
+      }, {});
+    },
+    // Finds the most popular job categories - top 5 only
+    jobsByField() {
+      const fields = this.jobsStore.jobs.reduce((acc, job) => {
+        acc[job.field] = (acc[job.field] || 0) + 1;
+        return acc;
+      }, {});
+      
+      // Sort by count and get top 5
+      return Object.fromEntries(
+        Object.entries(fields)
+          .sort(([,a], [,b]) => b - a)
+          .slice(0, 5)
+      );
+    }
   },
   methods: {
+    // When someone hits the search button - let's find them some jobs!
     handleSearch() {
       this.jobsStore.searchFilters = { ...this.searchFilters };
       this.jobsStore.filterJobs();
       this.$router.push("/jobs");
     },
+    // Handles the mobile filter menu submission
     applyMobileFilters() {
       this.showMobileFilters = false;
       this.handleSearch();
     },
+    // Formats the date to show like "13 December"
+    formatJobDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.toLocaleString('default', { month: 'long' });
+      return `${day} ${month}`;
+    },
+    // Makes dates look nice and friendly - like "2 days ago" instead of a boring date
+    formatDate(dateString) {
+      const days = Math.floor((new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24));
+      return days === 0 ? 'Today' : days === 1 ? 'Yesterday' : `${days} days ago`;
+    }
   },
   setup() {
+    // Gets everything ready when the page loads
     const jobsStore = useJobsStore();
     jobsStore.initializeJobs();
     return { jobsStore };
@@ -292,19 +415,21 @@ export default {
 </script>
 
 <style scoped>
+/* Makes the search bar stick nicely to the top */
 .search-section {
   margin-top: -24px;
   z-index: 1000;
   padding: 0.5rem 0;
 }
 
+/* Keeps everything neat when the search bar is stuck */
 .search-section.sticky-top {
   margin-top: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.25rem 0;
 }
 
-/* Modal styles for mobile filters */
+/* Makes things look good on phones */
 @media (max-width: 767px) {
   .modal.show {
     display: block;
@@ -333,5 +458,98 @@ export default {
   height: 50px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.form-control {
+  padding-right: 2.5rem;
+}
+
+.btn-link:hover {
+  background: none;
+}
+
+.btn-link i {
+  font-size: 1rem;
+}
+
+.btn i {
+  font-size: 1rem;
+}
+
+.btn.rounded-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Makes job cards look nice and bouncy on hover */
+.job-card {
+  transition: transform 0.2s;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Sidebar stuff - keeps it in view while scrolling */
+.sticky-sidebar {
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-widget {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.list-group-item {
+  background: #f8f9fa;
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background: #e9ecef;
+}
+
+@media (max-width: 991.98px) {
+  .sticky-sidebar {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
+.featured-jobs-container {
+  border: 1px solid #e5e5e5;
+}
+
+/* Pretty scrollbar that doesn't take up too much space */
+.custom-scrollbar {
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>

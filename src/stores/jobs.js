@@ -45,6 +45,12 @@ export const useJobsStore = defineStore('jobs', {
     },
 
     getFeaturedJobs() {
+      return this.jobs
+        .filter(job => job.featured)
+        .slice(0, 6)
+    },
+
+    getAllFeaturedJobs() {
       return this.jobs.filter(job => job.featured)
     },
 
