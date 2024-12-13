@@ -1,6 +1,7 @@
 <template>
   <nav
     class="navbar navbar-expand-lg bg-white navbar-light sticky-top shadow-sm"
+    :class="{ 'navbar-scrolled': isScrolled }"
   >
     <div class="container">
       <!-- Brand -->
@@ -67,7 +68,23 @@
 
 <script>
 export default {
-  name: "Navbar"
+  name: "Navbar",
+  data() {
+    return {
+      isScrolled: false
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    handleScroll() {
+      this.isScrolled = window.scrollY > 100
+    }
+  }
 };
 </script>
 
@@ -75,6 +92,18 @@ export default {
 .navbar {
   z-index: 1030;
   height: 72px;
+  transition: all 0.3s ease;
+  border-bottom: none;
+}
+
+.navbar.navbar-scrolled {
+  height: 56px;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.navbar.navbar-scrolled .navbar-brand {
+  font-size: 1.1rem;
 }
 
 @media (max-width: 991.98px) {

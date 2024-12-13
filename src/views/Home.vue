@@ -55,7 +55,11 @@
     </section>
 
     <!-- Search bar section -->
-    <section class="search-section bg-light sticky-top" style="top: 0;">
+    <section 
+      class="search-section bg-light sticky-top" 
+      :class="{ 'search-scrolled': isScrolled }"
+      style="top: 0;"
+    >
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-10">
@@ -237,150 +241,154 @@
     </div>
 
     <div id="job-section" class="container py-5">
-      <!-- VIP Jobs - These are the special featured ones -->
-      <div id="featured-jobs"></div>
-      <section class="mb-5">
-        <div class="featured-jobs-container border rounded-3 bg-white p-4">
-          <div class="mb-4">
-            <h2 class="m-0">Featured Jobs</h2>
-          </div>
-          <div class="row g-3">
-            <div class="col-md-6" v-for="job in featuredJobs" :key="job.id">
-              <div class="job-card border-0 shadow-sm p-3 bg-white">
-                <div class="d-flex align-items-start gap-3">
-                  <img
-                    :src="job.companyLogo"
-                    alt="Company Logo"
-                    class="company-logo flex-shrink-0"
-                    width="40"
-                    height="40"
-                  />
-                  <div>
-                    <h5 class="mb-1">{{ job.title }}</h5>
-                    <p class="text-muted mb-2 small">{{ job.company }}</p>
-                    <div class="d-flex gap-2">
-                      <span class="badge bg-light text-dark">{{
-                        job.location
-                      }}</span>
-                      <span class="badge bg-light text-dark">{{
-                        job.type
-                      }}</span>
+      <div class="row">
+        <!-- Left side - Main content -->
+        <div class="col-lg-8">
+          <!-- Featured Jobs -->
+          <section class="mb-5">
+            <div class="featured-jobs-container border rounded-3 bg-white p-4">
+              <div class="mb-4">
+                <h2 class="m-0">Featured Jobs</h2>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6" v-for="job in featuredJobs" :key="job.id">
+                  <div class="job-card border-0 shadow-sm p-3 bg-white">
+                    <div class="d-flex align-items-start gap-3">
+                      <img
+                        :src="job.companyLogo"
+                        alt="Company Logo"
+                        class="company-logo flex-shrink-0"
+                        width="40"
+                        height="40"
+                      />
+                      <div>
+                        <h5 class="mb-1">{{ job.title }}</h5>
+                        <p class="text-muted mb-2 small">{{ job.company }}</p>
+                        <div class="d-flex gap-2">
+                          <span class="badge bg-light text-dark">{{
+                            job.location
+                          }}</span>
+                          <span class="badge bg-light text-dark">{{
+                            job.type
+                          }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center mt-4 pt-3 border-top">
+                <router-link
+                  to="/featured-jobs"
+                  class="btn btn-outline-primary"
+                >
+                  See All Featured Jobs
+                </router-link>
+              </div>
+            </div>
+          </section>
+
+          <!-- Latest Jobs -->
+          <section>
+            <h2 class="mb-4">Latest Jobs</h2>
+            <div class="row g-3">
+              <div class="col-12" v-for="job in latestJobs" :key="job.id">
+                <div class="job-card border-0 shadow-sm p-4 bg-white">
+                  <div class="d-flex align-items-start gap-4">
+                    <img
+                      :src="job.companyLogo"
+                      alt="Company Logo"
+                      class="company-logo flex-shrink-0"
+                      width="60"
+                      height="60"
+                    />
+                    <div>
+                      <h5 class="mb-1">{{ job.title }}</h5>
+                      <p class="text-muted mb-2 small">{{ job.company }}</p>
+                      <p class="text-muted mb-2 small">
+                        <i class="bi bi-calendar3 me-2"></i>
+                        {{ formatJobDate(job.postedDate) }}
+                      </p>
+                      <p class="mb-3">{{ job.description }}</p>
+                      <div class="d-flex gap-2">
+                        <span class="badge bg-light text-dark">{{
+                          job.location
+                        }}</span>
+                        <span class="badge bg-light text-dark">{{
+                          job.type
+                        }}</span>
+                        <span class="badge bg-light text-dark"
+                          >{{ job.salary }}/year</span
+                        >
+                      </div>
+                      <div class="mt-3">
+                        <router-link
+                          :to="'/jobs/' + job.id"
+                          class="btn btn-outline-primary btn-sm"
+                        >
+                          View Details
+                        </router-link>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="text-center mt-4 pt-3 border-top">
-            <router-link
-              to="/featured-jobs"
-              class="btn btn-outline-primary"
-            >
-              See All Featured Jobs
-            </router-link>
-          </div>
+          </section>
         </div>
-      </section>
 
-      <!-- Fresh Jobs - Shows the most recent postings -->
-      <section>
-        <h2 class="mb-4">Latest Jobs</h2>
-        <div class="row g-3">
-          <div class="col-12" v-for="job in latestJobs" :key="job.id">
-            <div class="job-card border-0 shadow-sm p-4 bg-white">
-              <div class="d-flex align-items-start gap-4">
-                <img
-                  :src="job.companyLogo"
-                  alt="Company Logo"
-                  class="company-logo flex-shrink-0"
-                  width="60"
-                  height="60"
-                />
-                <div>
-                  <h5 class="mb-1">{{ job.title }}</h5>
-                  <p class="text-muted mb-2 small">{{ job.company }}</p>
-                  <p class="text-muted mb-2 small">
-                    <i class="bi bi-calendar3 me-2"></i>
-                    {{ formatJobDate(job.postedDate) }}
-                  </p>
-                  <p class="mb-3">{{ job.description }}</p>
-                  <div class="d-flex gap-2">
-                    <span class="badge bg-light text-dark">{{
-                      job.location
-                    }}</span>
-                    <span class="badge bg-light text-dark">{{
-                      job.type
-                    }}</span>
-                    <span class="badge bg-light text-dark"
-                      >{{ job.salary }}/year</span
-                    >
-                  </div>
-                  <div class="mt-3">
-                    <router-link
-                      :to="'/jobs/' + job.id"
-                      class="btn btn-outline-primary btn-sm"
-                    >
-                      View Details
-                    </router-link>
-                  </div>
-                </div>
+        <!-- Right side - Sidebar -->
+        <div class="col-lg-4">
+          <div class="sticky-sidebar custom-scrollbar">
+            <!-- Recent Postings -->
+            <div class="sidebar-widget mb-4">
+              <h4 class="mb-3">Recent Postings</h4>
+              <div class="list-group">
+                <a
+                  v-for="job in recentPostings"
+                  :key="job.id"
+                  href="#"
+                  class="list-group-item list-group-item-action border-0 mb-2 rounded"
+                >
+                  <h6 class="mb-1">{{ job.title }}</h6>
+                  <p class="mb-1 small text-muted">{{ job.company }}</p>
+                  <small class="text-muted"
+                    >Posted {{ formatDate(job.postedDate) }}</small
+                  >
+                </a>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- Right side - Quick stats and filters -->
-      <div class="col-lg-4">
-        <div class="sticky-sidebar custom-scrollbar">
-          <!-- Super fresh jobs - Just posted! -->
-          <div class="sidebar-widget mb-4">
-            <h4 class="mb-3">Recent Postings</h4>
-            <div class="list-group">
-              <a
-                v-for="job in recentPostings"
-                :key="job.id"
-                href="#"
-                class="list-group-item list-group-item-action border-0 mb-2 rounded"
-              >
-                <h6 class="mb-1">{{ job.title }}</h6>
-                <p class="mb-1 small text-muted">{{ job.company }}</p>
-                <small class="text-muted"
-                  >Posted {{ formatDate(job.postedDate) }}</small
+            <!-- Jobs by State -->
+            <div class="sidebar-widget mb-4">
+              <h4 class="mb-3">Jobs by State</h4>
+              <div class="list-group">
+                <a
+                  v-for="(count, state) in jobsByState"
+                  :key="state"
+                  href="#"
+                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
                 >
-              </a>
+                  {{ state }}
+                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                </a>
+              </div>
             </div>
-          </div>
 
-          <!-- Jobs grouped by states - helps find local work -->
-          <div class="sidebar-widget mb-4">
-            <h4 class="mb-3">Jobs by State</h4>
-            <div class="list-group">
-              <a
-                v-for="(count, state) in jobsByState"
-                :key="state"
-                href="#"
-                class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
-              >
-                {{ state }}
-                <span class="badge bg-primary rounded-pill">{{ count }}</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Most popular job types - what's hot right now -->
-          <div class="sidebar-widget">
-            <h4 class="mb-3">Popular Categories</h4>
-            <div class="list-group">
-              <a
-                v-for="(count, field) in jobsByField"
-                :key="field"
-                href="#"
-                class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
-              >
-                {{ field }}
-                <span class="badge bg-primary rounded-pill">{{ count }}</span>
-              </a>
+            <!-- Popular Categories -->
+            <div class="sidebar-widget">
+              <h4 class="mb-3">Popular Categories</h4>
+              <div class="list-group">
+                <a
+                  v-for="(count, field) in jobsByField"
+                  :key="field"
+                  href="#"
+                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
+                >
+                  {{ field }}
+                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -406,6 +414,7 @@ export default {
       },
       // Controls if the mobile filter menu is showing or not
       showMobileFilters: false,
+      isScrolled: false
     };
   },
   computed: {
@@ -475,6 +484,15 @@ export default {
         ? "Yesterday"
         : `${days} days ago`;
     },
+    handleScroll() {
+      this.isScrolled = window.scrollY > 100
+    },
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll)
   },
   setup() {
     // Gets everything ready when the page loads
@@ -525,8 +543,30 @@ html {
   border-bottom: 1px solid rgba(0,0,0,0.1);
   background-color: rgba(248, 249, 250, 0.95);
   backdrop-filter: blur(8px);
+  margin-top: 72px;
+  transition: all 0.3s ease;
+}
+
+.search-section.search-scrolled {
+  padding: 0.25rem 0;
+  margin-top: 56px;
+}
+
+.search-section.sticky-top {
+  margin-top: 0;
   transform: translateY(72px);
-  transition: transform 0.2s;
+}
+
+.search-section.sticky-top.search-scrolled {
+  transform: translateY(56px);
+}
+
+.search-section.search-scrolled .form-control,
+.search-section.search-scrolled .form-select {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  height: 30px;
+  font-size: 0.875rem;
 }
 
 .company-logo {
@@ -570,17 +610,20 @@ html {
   transform: translateY(-2px);
 }
 
-/* Sidebar stuff - keeps it in view while scrolling */
+/* Sidebar styles */
 .sticky-sidebar {
   position: sticky;
-  top: 100px;
+  top: 140px; /* Adjusted to account for navbar + search bar */
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
 }
 
 .sidebar-widget {
   background: white;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
 }
 
 .list-group-item {
@@ -595,6 +638,7 @@ html {
 @media (max-width: 991.98px) {
   .sticky-sidebar {
     position: static;
+    max-height: none;
     margin-top: 2rem;
   }
 }
@@ -638,10 +682,15 @@ html {
 /* Adjust for mobile screens */
 @media (max-width: 991.98px) {
   .search-section {
-    transform: translateY(56px);
+    margin-top: 56px;
   }
   .search-section.sticky-top {
+    margin-top: 0;
     transform: translateY(56px);
+  }
+  .search-section.search-scrolled {
+    transform: translateY(56px);
+    padding: 0.25rem 0;
   }
 }
 </style>
