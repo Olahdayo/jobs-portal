@@ -73,6 +73,13 @@ export default {
 
 <style scoped>
 .navbar {
-  z-index: 1000;
+  z-index: 1030;
+  height: 72px;
+}
+
+@media (max-width: 991.98px) {
+  .navbar {
+    height: 56px;
+  }
 }
 </style>
