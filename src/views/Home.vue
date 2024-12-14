@@ -7,19 +7,22 @@
         <div class="row min-vh-75 align-items-center py-5">
           <div class="col-lg-8 text-center text-lg-start">
             <h1 class="display-4 fw-bold mb-4">
-              Find Your Dream Job in Nigeria
+              Unlock Your Future
             </h1>
-            <p class="lead mb-4">
-              Discover thousands of job opportunities across Nigeria. From
-              tech to finance, entry-level to executive positions - your next
-              career move starts here.
+            <p class="lead mb-5">
+              Dive into a world of opportunities and discover your perfect match!
+               Easily browse, apply, and connect with top employers in your industry.
             </p>
             <div
               class="d-flex gap-3 justify-content-center justify-content-lg-start"
             >
-              <a href="#featured-jobs" class="btn btn-light btn-lg">
-                <i class="bi bi-search me-2"></i>Hunt Jobs
-              </a>
+              <Button
+                label="Hunt Jobs"
+                buttonType="btn-light"
+                size="btn-lg"
+                @click="scrollToFeaturedJobs"
+                icon="bi bi-search me-2"
+              />
               <router-link to="/signup" class="btn btn-outline-light btn-lg">
                 <i class="bi bi-person-plus me-2"></i>Join Us
               </router-link>
@@ -153,58 +156,12 @@
 
         <!-- Right side - Sidebar -->
         <div class="col-lg-4">
-          <div class="sticky-sidebar custom-scrollbar">
-            <!-- Recent Postings -->
-            <div class="sidebar-widget mb-4">
-              <h4 class="mb-3">Recent Postings</h4>
-              <div class="list-group">
-                <a
-                  v-for="job in recentPostings"
-                  :key="job.id"
-                  href="#"
-                  class="list-group-item list-group-item-action border-0 mb-2 rounded"
-                >
-                  <h6 class="mb-1">{{ job.title }}</h6>
-                  <p class="mb-1 small text-muted">{{ job.company }}</p>
-                  <small class="text-muted"
-                    >Posted {{ formatDate(job.postedDate) }}</small
-                  >
-                </a>
-              </div>
-            </div>
-
-            <!-- Jobs by State -->
-            <div class="sidebar-widget mb-4">
-              <h4 class="mb-3">Jobs by State</h4>
-              <div class="list-group">
-                <a
-                  v-for="(count, state) in jobsByState"
-                  :key="state"
-                  href="#"
-                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
-                >
-                  {{ state }}
-                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Popular Categories -->
-            <div class="sidebar-widget">
-              <h4 class="mb-3">Popular Categories</h4>
-              <div class="list-group">
-                <a
-                  v-for="(count, field) in jobsByField"
-                  :key="field"
-                  href="#"
-                  class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
-                >
-                  {{ field }}
-                  <span class="badge bg-primary rounded-pill">{{ count }}</span>
-                </a>
-              </div>
-            </div>
-          </div>
+          <Sidebar 
+            :recentPostings="recentPostings" 
+            :jobsByState="jobsByState" 
+            :jobsByField="jobsByField" 
+            :formatDate="formatDate" 
+          />
         </div>
       </div>
     </div>
@@ -213,12 +170,18 @@
 
 <script>
 import { useJobsStore } from "@/stores/jobs";
+import Sidebar from "@/components/Sidebar.vue";
+import Button from "@/components/Button.vue";
 
 export default {
   name: "Home",
+  components: {
+    Sidebar,
+    Button,
+  },
   data() {
     return {
-      // These are the filters users can play with to find their perfect job
+      // These are the filters to find  job
       searchFilters: {
         query: "",
         location: "",
@@ -236,40 +199,13 @@ export default {
     featuredJobs() {
       return this.jobsStore.getFeaturedJobs();
     },
-    // Gets the newest jobs - fresh off the press!
+    // Gets the newest jobs 
     latestJobs() {
       return this.jobsStore.getLatestJobs();
     },
-    // Super fresh jobs for the sidebar - just the last 5
-    recentPostings() {
-      return [...this.jobsStore.jobs]
-        .sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate))
-        .slice(0, 5);
-    },
-    // Counts how many jobs we have in each state
-    jobsByState() {
-      return this.jobsStore.jobs.reduce((acc, job) => {
-        acc[job.location] = (acc[job.location] || 0) + 1;
-        return acc;
-      }, {});
-    },
-    // Finds the most popular job categories - top 5 only
-    jobsByField() {
-      const fields = this.jobsStore.jobs.reduce((acc, job) => {
-        acc[job.field] = (acc[job.field] || 0) + 1;
-        return acc;
-      }, {});
-
-      // Sort by count and get top 5
-      return Object.fromEntries(
-        Object.entries(fields)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 5)
-      );
-    },
   },
   methods: {
-    // When someone hits the search button - let's find them some jobs!
+    // search button find jobs!
     handleSearch() {
       this.jobsStore.searchFilters = { ...this.searchFilters };
       this.jobsStore.filterJobs();
@@ -280,14 +216,14 @@ export default {
       this.showMobileFilters = false;
       this.handleSearch();
     },
-    // Formats the date to show like "13 December"
+    // Formats the date 
     formatJobDate(dateString) {
       const date = new Date(dateString);
       const day = date.getDate();
       const month = date.toLocaleString("default", { month: "long" });
       return `${day} ${month}`;
     },
-    // Makes dates look nice and friendly - like "2 days ago" instead of a boring date
+    
     formatDate(dateString) {
       const days = Math.floor(
         (new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24)
@@ -301,6 +237,12 @@ export default {
     handleScroll() {
       this.isScrolled = window.scrollY > 100
     },
+    scrollToFeaturedJobs() {
+      const featuredJobsSection = document.getElementById('featured-jobs');
+      if (featuredJobsSection) {
+        featuredJobsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    },
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
@@ -312,7 +254,30 @@ export default {
     // Gets everything ready when the page loads
     const jobsStore = useJobsStore();
     jobsStore.initializeJobs();
-    return { jobsStore };
+    return { 
+      jobsStore,
+      recentPostings: [...jobsStore.jobs]
+        .sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate))
+        .slice(0, 5),
+      jobsByState: jobsStore.jobs.reduce((acc, job) => {
+        acc[job.location] = (acc[job.location] || 0) + 1;
+        return acc;
+      }, {}),
+      jobsByField: jobsStore.jobs.reduce((acc, job) => {
+        acc[job.field] = (acc[job.field] || 0) + 1;
+        return acc;
+      }, {}),
+      formatDate: (dateString) => {
+        const days = Math.floor(
+          (new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24)
+        );
+        return days === 0
+          ? "Today"
+          : days === 1
+          ? "Yesterday"
+          : `${days} days ago`;
+      },
+    };
   },
 };
 </script>
@@ -320,21 +285,21 @@ export default {
 <style scoped>
 /* Hero section styles */
 .hero-section {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
-  position: relative;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  min-height: 400px;
 }
 
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url("/hero-pattern.svg") center/cover;
-  opacity: 0.1;
+.hero-section .container {
+  padding: 0;
 }
+
 
 .min-vh-75 {
   min-height: 75vh;
@@ -350,7 +315,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Update search section styles */
 .search-section {
   padding: 1rem 0;
   z-index: 1020;
@@ -413,7 +377,7 @@ html {
   padding: 0;
 }
 
-/* Makes job cards look nice and bouncy on hover */
+
 .job-card {
   transition: transform 0.2s;
   cursor: pointer;
@@ -427,7 +391,7 @@ html {
 /* Sidebar styles */
 .sticky-sidebar {
   position: sticky;
-  top: 140px; /* Adjusted to account for navbar + search bar */
+  top: 140px; 
   max-height: calc(100vh - 160px);
   overflow-y: auto;
 }
