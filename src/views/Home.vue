@@ -17,7 +17,7 @@
               class="d-flex gap-3 justify-content-center justify-content-lg-start"
             >
               <button @click="scrollToJobSection" class="btn btn-light btn-lg">
-                Hunt Jobs
+                Jobs Hub
               </button>
               <Button to="/signup" label="Join Us" buttonType="btn-outline-light" size="btn-lg">
               <i class="bi bi-person-plus me-2"></i>  
@@ -70,7 +70,7 @@
                   <div class="job-card border-0 shadow-sm p-3 bg-white">
                     <div class="d-flex align-items-start gap-3">
                       <img
-                        :src="job.companyLogo"
+                        :src="job.companyLogo ? job.companyLogo : defaultCompanyLogo"
                         alt="Company Logo"
                         class="company-logo flex-shrink-0"
                         width="40"
@@ -106,7 +106,7 @@
                 <div class="job-card border-0 shadow-sm p-4 bg-white">
                   <div class="d-flex align-items-start gap-4">
                     <img
-                      :src="job.companyLogo"
+                      :src="job.companyLogo ? job.companyLogo : defaultCompanyLogo"
                       alt="Company Logo"
                       class="company-logo flex-shrink-0"
                       width="60"
@@ -183,6 +183,7 @@ export default {
       showMobileFilters: false,
       isScrolled: false,
       showSearchFilters: false, 
+      defaultCompanyLogo: '/images/dashboard-default.svg',
     };
   },
   computed: {

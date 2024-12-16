@@ -5,7 +5,7 @@
   >
     <div class="container-fluid">
       <a class="navbar-brand fw-bold text-primary" href="/">
-        <i class="bi bi-briefcase-fill me-2"></i>JobHunter
+        <i class="bi bi-briefcase-fill me-2"></i>NestHub
       </a>
 
       <!-- Navbar Links -->
@@ -92,7 +92,12 @@
         <h5>Filtered Jobs:</h5>
         <ul class="list-group">
           <li v-for="job in filteredJobs" :key="job.id" class="list-group-item">
-            {{ job.title }} - {{ job.location }}
+            <Button 
+              :to="'/jobs/' + job.id" 
+              :label="job.title + ' - ' + job.location" 
+              buttonType="btn-link" 
+              class="no-underline"
+            />
           </li>
           <li v-if="filteredJobs.length === 0 && (searchFilters.query || searchFilters.location)" class="list-group-item text-danger">
             No jobs found.
@@ -215,6 +220,11 @@ export default {
 /* Add space between brand and nav links */
 .navbar-nav {
   margin-left: 20px; 
+}
+
+/* Remove underline from links */
+.no-underline {
+  text-decoration: none !important; /* Remove underline */
 }
 
 /* Search dropdown styles */
