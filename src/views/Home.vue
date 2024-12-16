@@ -1,31 +1,27 @@
 <template>
   <div>
-    <!-- Welcome hero section with a cool gradient background -->
+
+    <!-- Welcome hero section -->
     <section class="hero-section text-white position-relative">
       <div class="hero-overlay"></div>
       <div class="container position-relative">
         <div class="row min-vh-75 align-items-center py-5">
           <div class="col-lg-8 text-center text-lg-start">
-            <h1 class="display-4 fw-bold mb-4">
-              Unlock Your Future
-            </h1>
+            <h1 class="display-4 fw-bold mb-4">Unlock Your Future</h1>
             <p class="lead mb-5">
-              Dive into a world of opportunities and discover your perfect match!
-               Easily browse, apply, and connect with top employers in your industry.
+              Dive into a world of opportunities and discover your perfect
+              match! Easily browse, apply, and connect with top employers in
+              your industry.
             </p>
             <div
               class="d-flex gap-3 justify-content-center justify-content-lg-start"
             >
-              <Button
-                label="Hunt Jobs"
-                buttonType="btn-light"
-                size="btn-lg"
-                @click="scrollToFeaturedJobs"
-                icon="bi bi-search me-2"
-              />
-              <router-link to="/signup" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-person-plus me-2"></i>Join Us
-              </router-link>
+              <button @click="scrollToJobSection" class="btn btn-light btn-lg">
+                Hunt Jobs
+              </button>
+              <Button to="/signup" label="Join Us" buttonType="btn-outline-light" size="btn-lg">
+              <i class="bi bi-person-plus me-2"></i>  
+              </Button>
             </div>
           </div>
           <div class="col-lg-4 d-none d-lg-block">
@@ -59,11 +55,13 @@
 
     <div id="job-section" class="container py-5">
       <div class="row">
-        <!-- Left side - Main content -->
         <div class="col-lg-8">
           <!-- Featured Jobs -->
           <section class="mb-5">
-            <div class="featured-jobs-container border rounded-3 bg-white p-4">
+            <div
+              id="featured-jobs"
+              class="featured-jobs-container border rounded-3 bg-white p-4"
+            >
               <div class="mb-4">
                 <h2 class="m-0">Featured Jobs</h2>
               </div>
@@ -95,12 +93,7 @@
                 </div>
               </div>
               <div class="text-center mt-4 pt-3 border-top">
-                <router-link
-                  to="/featured-jobs"
-                  class="btn btn-outline-primary"
-                >
-                  See All Featured Jobs
-                </router-link>
+                <Button to="/featured-jobs" label="See All Featured Jobs" buttonType="btn btn-outline-primary" />
               </div>
             </div>
           </section>
@@ -139,12 +132,7 @@
                         >
                       </div>
                       <div class="mt-3">
-                        <router-link
-                          :to="'/jobs/' + job.id"
-                          class="btn btn-outline-primary btn-sm"
-                        >
-                          View Details
-                        </router-link>
+                        <Button :to="'/jobs/' + job.id" label="View Details" buttonType="btn btn-outline-primary btn-sm" />
                       </div>
                     </div>
                   </div>
@@ -156,11 +144,11 @@
 
         <!-- Right side - Sidebar -->
         <div class="col-lg-4">
-          <Sidebar 
-            :recentPostings="recentPostings" 
-            :jobsByState="jobsByState" 
-            :jobsByField="jobsByField" 
-            :formatDate="formatDate" 
+          <Sidebar
+            :recentPostings="recentPostings"
+            :jobsByState="jobsByState"
+            :jobsByField="jobsByField"
+            :formatDate="formatDate"
           />
         </div>
       </div>
@@ -172,12 +160,14 @@
 import { useJobsStore } from "@/stores/jobs";
 import Sidebar from "@/components/Sidebar.vue";
 import Button from "@/components/Button.vue";
+import Navbar from "@/components/Navbar.vue";
 
 export default {
   name: "Home",
   components: {
     Sidebar,
     Button,
+    Navbar,
   },
   data() {
     return {
@@ -191,15 +181,15 @@ export default {
       },
       // Controls if the mobile filter menu is showing or not
       showMobileFilters: false,
-      isScrolled: false
+      isScrolled: false,
+      showSearchFilters: false, 
     };
   },
   computed: {
-    // Grabs the special featured jobs - limited to 6 to keep it snappy
     featuredJobs() {
       return this.jobsStore.getFeaturedJobs();
     },
-    // Gets the newest jobs 
+    // Gets the newest jobs
     latestJobs() {
       return this.jobsStore.getLatestJobs();
     },
@@ -216,14 +206,14 @@ export default {
       this.showMobileFilters = false;
       this.handleSearch();
     },
-    // Formats the date 
+    // Formats the date
     formatJobDate(dateString) {
       const date = new Date(dateString);
       const day = date.getDate();
       const month = date.toLocaleString("default", { month: "long" });
       return `${day} ${month}`;
     },
-    
+
     formatDate(dateString) {
       const days = Math.floor(
         (new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24)
@@ -235,26 +225,35 @@ export default {
         : `${days} days ago`;
     },
     handleScroll() {
-      this.isScrolled = window.scrollY > 100
+      this.isScrolled = window.scrollY > 100;
     },
     scrollToFeaturedJobs() {
-      const featuredJobsSection = document.getElementById('featured-jobs');
+      const featuredJobsSection = document.getElementById("featured-jobs");
       if (featuredJobsSection) {
-        featuredJobsSection.scrollIntoView({ behavior: 'smooth' });
+        featuredJobsSection.scrollIntoView({ behavior: "smooth" });
       }
+    },
+    scrollToJobSection() {
+      const jobSection = document.getElementById("job-section");
+      if (jobSection) {
+        jobSection.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    toggleSearchFilters() {
+      this.showSearchFilters = !this.showSearchFilters; 
     },
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener("scroll", this.handleScroll);
   },
   unmounted() {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener("scroll", this.handleScroll);
   },
   setup() {
     // Gets everything ready when the page loads
     const jobsStore = useJobsStore();
     jobsStore.initializeJobs();
-    return { 
+    return {
       jobsStore,
       recentPostings: [...jobsStore.jobs]
         .sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate))
@@ -300,7 +299,6 @@ export default {
   padding: 0;
 }
 
-
 .min-vh-75 {
   min-height: 75vh;
 }
@@ -318,7 +316,7 @@ html {
 .search-section {
   padding: 1rem 0;
   z-index: 1020;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   background-color: rgba(248, 249, 250, 0.95);
   backdrop-filter: blur(8px);
   margin-top: 72px;
@@ -377,7 +375,6 @@ html {
   padding: 0;
 }
 
-
 .job-card {
   transition: transform 0.2s;
   cursor: pointer;
@@ -391,7 +388,7 @@ html {
 /* Sidebar styles */
 .sticky-sidebar {
   position: sticky;
-  top: 140px; 
+  top: 140px;
   max-height: calc(100vh - 160px);
   overflow-y: auto;
 }
@@ -400,7 +397,7 @@ html {
   background: white;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 1.5rem;
 }
 
@@ -453,7 +450,7 @@ html {
 
 /* Adjust spacing when search bar becomes sticky */
 .search-section.sticky-top {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transform: translateY(72px);
 }
 
@@ -470,5 +467,18 @@ html {
     transform: translateY(56px);
     padding: 0.25rem 0;
   }
+}
+
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it appears above other content */
 }
 </style>

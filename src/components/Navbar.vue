@@ -47,29 +47,57 @@
               </li>
             </ul>
           </li>
-          <!-- Search Icon Moved Here -->
-          <div class="nav-item dropdown order-lg-last ms-lg-3 me-2">
-            <button
-              class="btn btn-link text-dark p-0 position-relative"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="bi bi-search fs-5"></i>
-            </button>
-            <!-- Search Dropdown -->
-            <div class="dropdown-menu dropdown-menu-end p-3 mt-1 shadow-sm search-dropdown">
-              <form @submit.prevent="handleSearch" class="search-form">
-                <!-- ... existing search form code ... -->
-              </form>
-            </div>
-          </div>
         </ul>
+
+        <!-- Search Filter Moved Here -->
+        <div class="d-flex align-items-center me-3">
+          <input
+            type="text"
+            class="form-control form-control-sm me-2"
+            placeholder="Job title or company"
+            v-model="searchFilters.query"
+            @input="handleInput"
+            @focus="showDropdown = true"
+          />
+          <div class="position-relative">
+            <input
+              type="text"
+              class="form-control form-control-sm me-2"
+              placeholder="Location"
+              v-model="searchFilters.location"
+              @focus="showDropdown = true"
+              @input="handleLocationInput"
+              @blur="hideDropdown"
+            />
+          </div>
+          <button
+            class="btn btn-primary btn-sm btn-search"
+            @click="handleSearch"
+          >
+            <i class="bi bi-search me-1"></i>Search
+          </button>
+        </div>
 
         <!-- Auth Buttons -->
         <div class="d-flex gap-2">
           <Button to="/login" label="Login" buttonType="btn-outline-primary" size="btn-sm" />
           <Button to="/signup" label="Sign Up" buttonType="btn-primary" size="btn-sm" />
         </div>
+      </div>
+    </div>
+
+    <!-- Display Filtered Jobs in a Centered Dropdown -->
+    <div v-if="showDropdown" class="job-dropdown">
+      <div class="dropdown-content">
+        <h5>Filtered Jobs:</h5>
+        <ul class="list-group">
+          <li v-for="job in filteredJobs" :key="job.id" class="list-group-item">
+            {{ job.title }} - {{ job.location }}
+          </li>
+          <li v-if="filteredJobs.length === 0 && (searchFilters.query || searchFilters.location)" class="list-group-item text-danger">
+            No jobs found.
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -79,30 +107,27 @@
 import { useJobsStore } from "@/stores/jobs";
 import { useRouter } from "vue-router";
 import Button from "@/components/Button.vue";
-import Forms from "@/components/Forms.vue";
+import filterOptions from '@/data/filterOptions.json'; 
 
 export default {
   name: "Navbar",
   components: {
     Button,
-    Forms,
   },
   data() {
     return {
-      isScrolled: false,
+      showSearch: false,
+      showDropdown: false,
       searchFilters: {
         query: "",
-        location: "",
-        field: "",
-        education: "",
-        jobType: "",
+        location: "", 
+        education: [],
+        field: [],
+        jobType: [],
       },
-      filterOptions: {
-        locations: [],
-        fields: [],
-        educationLevels: [],
-        jobTypes: [],
-      },
+      isScrolled: false,
+      filterOptions, 
+      showLocationDropdown: false,
     };
   },
   setup() {
@@ -110,26 +135,55 @@ export default {
     const router = useRouter();
     return { jobsStore, router };
   },
+  computed: {
+    filteredJobs() {
+      return this.jobsStore.jobs.filter(job => {
+        const matchesQuery = job.title.toLowerCase().includes(this.searchFilters.query.toLowerCase()) ||
+                             job.company.toLowerCase().includes(this.searchFilters.query.toLowerCase());
+        const matchesLocation = job.location.toLowerCase().includes(this.searchFilters.location.toLowerCase());
+        return matchesQuery && matchesLocation;
+      });
+    },
+  },
   methods: {
-    handleScroll() {
-      this.isScrolled = window.scrollY > 100;
+    hideDropdown() {
+      setTimeout(() => {
+        this.showLocationDropdown = false;
+      }, 100);
     },
     handleSearch() {
       this.jobsStore.searchFilters = { ...this.searchFilters };
-      this.jobsStore.filterJobs();
-      this.router.push("/jobs");
+      this.jobsStore.filterJobs(); 
+      this.showDropdown = this.filteredJobs.length > 0;
+      this.$router.push("/jobs");
+    },
+    handleInput() {
+      this.showDropdown = true;
+    },
+    handleLocationInput() {
+      this.showDropdown = true;
+    },
+    handleClickOutside(event) {
+      const dropdown = this.$el.querySelector('.job-dropdown');
+      const searchInput = this.$el.querySelector('input[placeholder="Job title or company"]');
+      const locationInput = this.$el.querySelector('input[placeholder="Location"]');
+
+      if (!dropdown.contains(event.target) && !searchInput.contains(event.target) && !locationInput.contains(event.target)) {
+        this.showDropdown = false;
+        this.searchFilters.query = "";
+        this.searchFilters.location = "";
+      }
     },
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener("click", this.handleClickOutside);
     const jobsStore = useJobsStore();
-    this.filterOptions.locations = jobsStore.filterOptions.locations;
-    this.filterOptions.fields = jobsStore.filterOptions.fields;
-    this.filterOptions.educationLevels = jobsStore.filterOptions.educationLevels;
-    this.filterOptions.jobTypes = jobsStore.filterOptions.jobTypes;
+    this.filterOptions = jobsStore.filterOptions; 
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("click", this.handleClickOutside);
   },
 };
 </script>
@@ -185,5 +239,42 @@ export default {
   .navbar {
     height: 56px;
   }
+}
+
+/* Add your styles here */
+.navbar .form-control {
+  width: 150px; /* Adjust width for the location input */
+}
+
+.navbar .btn-search {
+  padding: 0.25rem 0.5rem; /* Adjust padding for smaller button */
+  font-size: 0.875rem; /* Adjust font size if needed */
+}
+
+.dropdown-menu {
+  max-height: 200px; /* Limit height of dropdown */
+  overflow-y: auto; /* Enable scrolling if needed */
+}
+
+/* Centered Dropdown for Filtered Jobs */
+.job-dropdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1050; /* Above other elements */
+  width: 300px; /* Set a width for the dropdown */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-content {
+  max-height: 300px; /* Limit height of dropdown */
+  overflow-y: auto; /* Enable scrolling if needed */
 }
 </style>

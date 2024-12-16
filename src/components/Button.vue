@@ -1,45 +1,27 @@
 <template>
-  <button
-    :class="['btn', buttonType, sizeClass]"
-    :type="type"
-    @click="handleClick"
-  >
-    <i v-if="icon" :class="icon"></i>
-    <span>{{ label }}</span>
-  </button>
+  <router-link :to="to" class="btn" :class="buttonType" :size="size">
+    {{ label }}
+  </router-link>
 </template>
 
 <script>
 export default {
   props: {
+    to: {
+      type: String,
+      required: true,
+    },
     label: {
       type: String,
       required: true,
     },
     buttonType: {
       type: String,
-      default: 'btn-primary', // Default button type
+      default: 'btn-primary',
     },
     size: {
       type: String,
-      default: 'btn-lg', // Default size
-    },
-    icon: {
-      type: String,
-      default: null,
-    },
-    type: {
-      type: String,
-      default: 'button',
-    },
-    handleClick: {
-      type: Function,
-      default: () => {},
-    },
-  },
-  computed: {
-    sizeClass() {
-      return this.size; // Return the size class
+      default: 'btn-md',
     },
   },
 };
