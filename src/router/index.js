@@ -5,14 +5,14 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'Home',
+      path: "/",
+      name: "Home",
       component: Home,
     },
     {
-      path: '/jobs',
-      name: 'Jobs',
-      component: () => import('../views/JobListings.vue')
+      path: "/jobs",
+      name: "Jobs",
+      component: () => import("../views/JobListings.vue"),
     },
     {
       // path: '/create-job',
@@ -20,14 +20,14 @@ const router = createRouter({
       // component: () => import('../views/CreateJob.vue')
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: () => import('../views/login.vue')
+      path: "/login",
+      name: "Login",
+      component: () => import("../views/login.vue"),
     },
     {
-      path: '/signup',
-      name: 'Signup',
-      component: () => import('../views/signup.vue')
+      path: "/signup",
+      name: "Signup",
+      component: () => import("../views/signup.vue"),
     },
     {
       // path: '/faq',
@@ -40,11 +40,26 @@ const router = createRouter({
       // component: () => import('../views/Contact.vue')
     },
     {
-      path: '/featured-jobs',
-      name: 'FeaturedJobs',
-      component: () => import('../views/FeaturedJobs.vue')
+      path: "/featured-jobs",
+      name: "FeaturedJobs",
+      component: () => import("../views/FeaturedJobs.vue"),
     },
-  ]
-})
+    {
+      path: "/jobs/:id",
+      name: "JobDetails",
+      component: () => import("@/views/JobDetails.vue"), // Adjust the path as necessary
+    },
+    {
+      path: "/jobs/state/:state",
+      name: "JobsByState",
+      component: () => import("@/views/JobsByState.vue"), // Adjust the path as necessary
+    },
+    {
+      path: "/jobs/category/:category",
+      name: "JobsByCategory",
+      component: () => import("@/views/JobsByCategory.vue"), // Adjust the path as necessary
+    },
+  ],
+});
 
 export default router

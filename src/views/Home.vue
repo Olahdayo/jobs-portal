@@ -33,19 +33,19 @@
               <h4 class="mb-3">Quick Stats</h4>
               <div class="d-flex justify-content-between mb-3">
                 <div class="text-center">
-                  <h3 class="fw-bold text-primary">
+                  <h3 class="fw-bold text-success">
                     {{ jobsStore.jobs.length }}
                   </h3>
                   <p class="text-muted mb-0">Active Jobs</p>
                 </div>
                 <div class="text-center">
-                  <h3 class="fw-bold text-primary">
+                  <h3 class="fw-bold text-dark">
                     {{ Object.keys(jobsByState).length }}
                   </h3>
                   <p class="text-muted mb-0">Locations</p>
                 </div>
                 <div class="text-center">
-                  <h3 class="fw-bold text-primary">
+                  <h3 class="fw-bold text-info">
                     {{ Object.keys(jobsByField).length }}
                   </h3>
                   <p class="text-muted mb-0">Categories</p>
@@ -72,29 +72,31 @@
               <div class="row g-3">
                 <div class="col-md-6" v-for="job in featuredJobs" :key="job.id">
                   <div class="job-card border-0 shadow-sm p-3 bg-white">
-                    <div class="d-flex align-items-start gap-3">
-                      <img
-                        :src="
-                          job.companyLogo ? job.companyLogo : defaultCompanyLogo
-                        "
-                        alt="Company Logo"
-                        class="company-logo flex-shrink-0"
-                        width="40"
-                        height="40"
-                      />
-                      <div>
-                        <h5 class="mb-1">{{ job.title }}</h5>
-                        <p class="text-muted mb-2 small">{{ job.company }}</p>
-                        <div class="d-flex gap-2">
-                          <span class="badge bg-light text-dark">{{
-                            job.location
-                          }}</span>
-                          <span class="badge bg-light text-dark">{{
-                            job.type
-                          }}</span>
+                    <router-link :to="'/jobs/' + job.id">
+                      <div class="d-flex align-items-start gap-3">
+                        <img
+                          :src="
+                            job.companyLogo ? job.companyLogo : defaultCompanyLogo
+                          "
+                          alt="Company Logo"
+                          class="company-logo flex-shrink-0"
+                          width="40"
+                          height="40"
+                        />
+                        <div>
+                          <h5 class="mb-1">{{ job.title }}</h5>
+                          <p class="text-muted mb-2 small">{{ job.company }}</p>
+                          <div class="d-flex gap-2">
+                            <span class="badge bg-light text-dark">{{
+                              job.location
+                            }}</span>
+                            <span class="badge bg-light text-dark">{{
+                              job.type
+                            }}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      </router-link>
                   </div>
                 </div>
               </div>
@@ -320,10 +322,20 @@ export default {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+  background: url(images/Jobigrid.jpg) center center / cover;
+  position: relative;
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(22, 60, 104, 0.9); 
 }
 
 .hero-section .container {
@@ -441,19 +453,11 @@ html {
   background: #e9ecef;
 }
 
-@media (max-width: 991.98px) {
-  .sticky-sidebar {
-    position: static;
-    max-height: none;
-    margin-top: 2rem;
-  }
-}
 
 .featured-jobs-container {
   border: 1px solid #e5e5e5;
 }
 
-/* Pretty scrollbar that doesn't take up too much space */
 .custom-scrollbar {
   max-height: calc(100vh - 150px);
   overflow-y: auto;
@@ -479,15 +483,40 @@ html {
   background: #555;
 }
 
-/* Adjust spacing when search bar becomes sticky */
 .search-section.sticky-top {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transform: translateY(72px);
 }
 
-/* Adjust for mobile screens */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+}
+
+.job-card a {
+  text-decoration: none; 
+  color: #000; 
+}
+
+.job-card a:hover {
+  color: #000; 
+}
+
 @media (max-width: 991.98px) {
-  .search-section {
+  .sticky-sidebar {
+    position: static;
+    max-height: none;
+    margin-top: 2rem;
+  }
+    .search-section {
     margin-top: 56px;
   }
   .search-section.sticky-top {
@@ -498,18 +527,5 @@ html {
     transform: translateY(56px);
     padding: 0.25rem 0;
   }
-}
-
-.search-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Ensure it appears above other content */
 }
 </style>

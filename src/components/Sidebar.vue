@@ -4,16 +4,16 @@
     <div class="sidebar-widget mb-4">
       <h4 class="mb-3">Recent Postings</h4>
       <div class="list-group">
-        <a
+        <router-link
           v-for="job in recentPostings"
           :key="job.id"
-          href="#"
+          :to="'/jobs/' + job.id "
           class="list-group-item list-group-item-action border-0 mb-2 rounded"
         >
           <h6 class="mb-1">{{ job.title }}</h6>
           <p class="mb-1 small text-muted">{{ job.company }}</p>
           <small class="text-muted">Posted {{ formatDate(job.postedDate) }}</small>
-        </a>
+        </router-link>
       </div>
     </div>
 
@@ -21,15 +21,15 @@
     <div class="sidebar-widget mb-4">
       <h4 class="mb-3">Jobs by State</h4>
       <div class="list-group">
-        <a
+        <router-link
           v-for="(count, state) in jobsByState"
           :key="state"
-          href="#"
+          :to="'/jobs/state/' + state"
           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
         >
           {{ state }}
           <span class="badge bg-primary rounded-pill">{{ count }}</span>
-        </a>
+        </router-link>
       </div>
     </div>
 
@@ -37,15 +37,15 @@
     <div class="sidebar-widget">
       <h4 class="mb-3">Popular Categories</h4>
       <div class="list-group">
-        <a
-          v-for="(count, field) in jobsByField"
-          :key="field"
-          href="#"
+        <router-link
+          v-for="(count, category) in jobsByField"
+          :key="category"
+          :to="'/jobs/category/' + category"
           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center mb-2 rounded"
         >
-          {{ field }}
+          {{ category }}
           <span class="badge bg-primary rounded-pill">{{ count }}</span>
-        </a>
+        </router-link>
       </div>
     </div>
   </div>
@@ -66,7 +66,7 @@ export default {
 /* Sidebar styles */
 .sidebar {
   position: relative;
-  margin-top: -20px;
+  margin-top: 5px;
   max-height: calc(100vh - 40px);
   z-index: 1000;
 }

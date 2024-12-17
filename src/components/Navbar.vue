@@ -1,10 +1,10 @@
 <template>
   <nav
-    class="navbar navbar-expand-lg bg-white navbar-light sticky-top shadow-sm"
+    class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm"
     :class="{ 'navbar-scrolled': isScrolled }"
   >
     <div class="container-fluid">
-      <a class="navbar-brand fw-bold text-primary" href="/">
+      <a class="navbar-brand fw-bold" href="/">
         <i class="bi bi-briefcase-fill me-2"></i>JobiGrid
       </a>
 
@@ -178,6 +178,9 @@ export default {
     },
   },
   methods: {
+    handleScroll() {
+      this.isScrolled = window.scrollY > 0;
+    },
     hideDropdown() {
       setTimeout(() => {
         this.showLocationDropdown = false;
@@ -226,76 +229,60 @@ export default {
 .navbar {
   z-index: 1030;
   height: 72px;
-  transition: all 0.3s ease;
-  border-bottom: none;
+  transition: height 0.3s ease, padding 0.3s ease;
+  background-color: rgba(248, 248, 248, 0.9); 
+  
 }
 
 .navbar.navbar-scrolled {
-  height: 56px;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  height: 54px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .navbar.navbar-scrolled .navbar-brand {
   font-size: 1.1rem;
 }
 
-/* Align brand logo to the left and remove left margin */
+
 .navbar-brand {
   margin-left: 0;
-  padding-left: 0;
+  padding-left: 5px;
+  color: #2A4D74;
 }
 
-/* Add space between brand and nav links */
+
 .navbar-nav {
   margin-left: 20px;
 }
 
-/* Remove underline from links */
 .no-underline {
-  text-decoration: none !important; /* Remove underline */
+  text-decoration: none !important; 
 }
 
-/* Search dropdown styles */
+
 .search-dropdown {
   width: 320px;
   border: none;
   border-radius: 8px;
 }
 
-@media (max-width: 991.98px) {
-  .search-dropdown {
-    position: fixed !important;
-    top: 60px !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: auto !important;
-    margin: 0 1rem !important;
-  }
-}
 
-@media (max-width: 991.98px) {
-  .navbar {
-    height: 56px;
-  }
-}
-
-/* Add your styles here */
 .navbar .form-control {
-  width: 150px; /* Adjust width for the location input */
+  width: 150px; 
 }
 
 .navbar .btn-search {
-  padding: 0.25rem 0.5rem; /* Adjust padding for smaller button */
-  font-size: 0.875rem; /* Adjust font size if needed */
+  padding: 0.25rem 0.5rem; 
+  font-size: 0.875rem; 
 }
 
 .dropdown-menu {
-  max-height: 200px; /* Limit height of dropdown */
-  overflow-y: auto; /* Enable scrolling if needed */
+  max-height: 200px; 
+  overflow-y: auto; 
 }
 
-/* Centered Dropdown for Filtered Jobs */
+
 .job-dropdown {
   position: fixed;
   top: 50%;
@@ -305,15 +292,62 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1050; /* Above other elements */
-  width: 300px; /* Set a width for the dropdown */
+  z-index: 1050; 
+  width: 300px; 
   padding: 1rem;
   display: flex;
   flex-direction: column;
 }
 
 .dropdown-content {
-  max-height: 300px; /* Limit height of dropdown */
-  overflow-y: auto; /* Enable scrolling if needed */
+  max-height: 300px; 
+  overflow-y: auto; 
+}
+
+.navbar-nav .nav-link {
+  color: #000;
+}
+
+.navbar-nav .nav-link:hover {
+  border-bottom: 2px solid #2A4D74;
+}
+
+.btn-outline-primary {
+  color: #0847a7;
+  border: 1px solid #2A4D74;
+  padding: 2px;
+  border-radius: 10px;
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(30, 180, 155, 0.9); 
+}
+
+.btn-primary {
+  color: #0847a7;
+  border: 1px solid #2A4D74;
+  background-color: white;
+  padding: 5px;
+}
+
+.btn-primary:hover {
+  background-color: rgba(30, 180, 155, 0.9); 
+}
+.form-control {
+  border: 1px solid rgba(10, 11, 112, 0.9)
+}
+
+@media (max-width: 991.98px) {
+  .navbar {
+    height: 56px;
+  }
+  .search-dropdown {
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: auto !important;
+    margin: 0 1rem !important;
+  }
 }
 </style>
