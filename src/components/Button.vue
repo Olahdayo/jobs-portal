@@ -1,32 +1,41 @@
 <template>
-  <router-link :to="to" class="btn" :class="buttonType" :size="size">
+  <router-link v-if="to" :to="to" class="btn" :class="buttonType" :size="size">
     {{ label }}
   </router-link>
+  <button v-else :class="buttonType" :size="size" @click="handleClick($event)">
+    {{ label }}
+  </button>
 </template>
 
 <script>
 export default {
+  name: "Button",
   props: {
     to: {
       type: String,
-      required: true,
+      default: null,
     },
     label: {
       type: String,
-      required: true,
+      default: "",
     },
     buttonType: {
       type: String,
-      default: 'btn-primary',
+      default: "btn-primary",
     },
     size: {
       type: String,
-      default: 'btn-md',
+      default: "",
+    },
+  },
+  methods: {
+    handleClick(event) {
+      event.stopPropagation();
     },
   },
 };
 </script>
 
 <style scoped>
-/* Add any specific styles for the button here */
+
 </style> 

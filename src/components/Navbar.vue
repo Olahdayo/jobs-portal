@@ -5,7 +5,7 @@
   >
     <div class="container-fluid">
       <a class="navbar-brand fw-bold text-primary" href="/">
-        <i class="bi bi-briefcase-fill me-2"></i>NestHub
+        <i class="bi bi-briefcase-fill me-2"></i>JobiGrid
       </a>
 
       <!-- Navbar Links -->
@@ -27,7 +27,9 @@
             <router-link class="nav-link" to="/jobs">Explore Jobs</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/create-job">Create Jobs</router-link>
+            <router-link class="nav-link" to="/create-job"
+              >Create Jobs</router-link
+            >
           </li>
           <li class="nav-item dropdown">
             <a
@@ -43,7 +45,9 @@
                 <router-link class="dropdown-item" to="/faq">FAQ</router-link>
               </li>
               <li>
-                <router-link class="dropdown-item" to="/contact">Contact Us</router-link>
+                <router-link class="dropdown-item" to="/contact"
+                  >Contact Us</router-link
+                >
               </li>
             </ul>
           </li>
@@ -80,8 +84,18 @@
 
         <!-- Auth Buttons -->
         <div class="d-flex gap-2">
-          <Button to="/login" label="Login" buttonType="btn-outline-primary" size="btn-sm" />
-          <Button to="/signup" label="Sign Up" buttonType="btn-primary" size="btn-sm" />
+          <Button
+            to="/login"
+            label="Login"
+            buttonType="btn-outline-primary"
+            size="btn-sm"
+          />
+          <Button
+            to="/signup"
+            label="Sign Up"
+            buttonType="btn-primary"
+            size="btn-sm"
+          />
         </div>
       </div>
     </div>
@@ -92,14 +106,20 @@
         <h5>Filtered Jobs:</h5>
         <ul class="list-group">
           <li v-for="job in filteredJobs" :key="job.id" class="list-group-item">
-            <Button 
-              :to="'/jobs/' + job.id" 
-              :label="job.title + ' - ' + job.location" 
-              buttonType="btn-link" 
+            <Button
+              :to="'/jobs/' + job.id"
+              :label="job.title + ' - ' + job.location"
+              buttonType="btn-link"
               class="no-underline"
             />
           </li>
-          <li v-if="filteredJobs.length === 0 && (searchFilters.query || searchFilters.location)" class="list-group-item text-danger">
+          <li
+            v-if="
+              filteredJobs.length === 0 &&
+              (searchFilters.query || searchFilters.location)
+            "
+            class="list-group-item text-danger"
+          >
             No jobs found.
           </li>
         </ul>
@@ -112,7 +132,7 @@
 import { useJobsStore } from "@/stores/jobs";
 import { useRouter } from "vue-router";
 import Button from "@/components/Button.vue";
-import filterOptions from '@/data/filterOptions.json'; 
+import filterOptions from "@/data/filterOptions.json";
 
 export default {
   name: "Navbar",
@@ -125,13 +145,13 @@ export default {
       showDropdown: false,
       searchFilters: {
         query: "",
-        location: "", 
+        location: "",
         education: [],
         field: [],
         jobType: [],
       },
       isScrolled: false,
-      filterOptions, 
+      filterOptions,
       showLocationDropdown: false,
     };
   },
@@ -142,10 +162,17 @@ export default {
   },
   computed: {
     filteredJobs() {
-      return this.jobsStore.jobs.filter(job => {
-        const matchesQuery = job.title.toLowerCase().includes(this.searchFilters.query.toLowerCase()) ||
-                             job.company.toLowerCase().includes(this.searchFilters.query.toLowerCase());
-        const matchesLocation = job.location.toLowerCase().includes(this.searchFilters.location.toLowerCase());
+      return this.jobsStore.jobs.filter((job) => {
+        const matchesQuery =
+          job.title
+            .toLowerCase()
+            .includes(this.searchFilters.query.toLowerCase()) ||
+          job.company
+            .toLowerCase()
+            .includes(this.searchFilters.query.toLowerCase());
+        const matchesLocation = job.location
+          .toLowerCase()
+          .includes(this.searchFilters.location.toLowerCase());
         return matchesQuery && matchesLocation;
       });
     },
@@ -158,9 +185,9 @@ export default {
     },
     handleSearch() {
       this.jobsStore.searchFilters = { ...this.searchFilters };
-      this.jobsStore.filterJobs(); 
+      this.jobsStore.filterJobs();
+      this.router.push("/jobs");
       this.showDropdown = this.filteredJobs.length > 0;
-      this.$router.push("/jobs");
     },
     handleInput() {
       this.showDropdown = true;
@@ -173,10 +200,12 @@ export default {
       const searchInput = this.$el.querySelector('input[placeholder="Job title or company"]');
       const locationInput = this.$el.querySelector('input[placeholder="Location"]');
 
-      if (!dropdown.contains(event.target) && !searchInput.contains(event.target) && !locationInput.contains(event.target)) {
-        this.showDropdown = false;
-        this.searchFilters.query = "";
-        this.searchFilters.location = "";
+      if (dropdown && searchInput && locationInput) {
+        if (!dropdown.contains(event.target) && !searchInput.contains(event.target) && !locationInput.contains(event.target)) {
+          this.showDropdown = false;
+          this.searchFilters.query = "";
+          this.searchFilters.location = "";
+        }
       }
     },
   },
@@ -184,7 +213,7 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
     window.addEventListener("click", this.handleClickOutside);
     const jobsStore = useJobsStore();
-    this.filterOptions = jobsStore.filterOptions; 
+    this.filterOptions = jobsStore.filterOptions;
   },
   unmounted() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -213,13 +242,13 @@ export default {
 
 /* Align brand logo to the left and remove left margin */
 .navbar-brand {
-  margin-left: 0; 
+  margin-left: 0;
   padding-left: 0;
 }
 
 /* Add space between brand and nav links */
 .navbar-nav {
-  margin-left: 20px; 
+  margin-left: 20px;
 }
 
 /* Remove underline from links */

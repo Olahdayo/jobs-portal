@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!-- Welcome hero section -->
     <section class="hero-section text-white position-relative">
       <div class="hero-overlay"></div>
@@ -17,10 +16,15 @@
               class="d-flex gap-3 justify-content-center justify-content-lg-start"
             >
               <button @click="scrollToJobSection" class="btn btn-light btn-lg">
-                Jobs Hub
+                See Jobs
               </button>
-              <Button to="/signup" label="Join Us" buttonType="btn-outline-light" size="btn-lg">
-              <i class="bi bi-person-plus me-2"></i>  
+              <Button
+                to="/signup"
+                label="Join Us"
+                buttonType="btn-outline-light"
+                size="btn-lg"
+              >
+                <i class="bi bi-person-plus me-2"></i>
               </Button>
             </div>
           </div>
@@ -70,7 +74,9 @@
                   <div class="job-card border-0 shadow-sm p-3 bg-white">
                     <div class="d-flex align-items-start gap-3">
                       <img
-                        :src="job.companyLogo ? job.companyLogo : defaultCompanyLogo"
+                        :src="
+                          job.companyLogo ? job.companyLogo : defaultCompanyLogo
+                        "
                         alt="Company Logo"
                         class="company-logo flex-shrink-0"
                         width="40"
@@ -93,7 +99,11 @@
                 </div>
               </div>
               <div class="text-center mt-4 pt-3 border-top">
-                <Button to="/featured-jobs" label="See All Featured Jobs" buttonType="btn btn-outline-primary" />
+                <Button
+                  to="/featured-jobs"
+                  label="See All Featured Jobs"
+                  buttonType="btn btn-outline-primary"
+                />
               </div>
             </div>
           </section>
@@ -106,7 +116,9 @@
                 <div class="job-card border-0 shadow-sm p-4 bg-white">
                   <div class="d-flex align-items-start gap-4">
                     <img
-                      :src="job.companyLogo ? job.companyLogo : defaultCompanyLogo"
+                      :src="
+                        job.companyLogo ? job.companyLogo : defaultCompanyLogo
+                      "
                       alt="Company Logo"
                       class="company-logo flex-shrink-0"
                       width="60"
@@ -132,12 +144,23 @@
                         >
                       </div>
                       <div class="mt-3">
-                        <Button :to="'/jobs/' + job.id" label="View Details" buttonType="btn btn-outline-primary btn-sm" />
+                        <Button
+                          :to="'/jobs/' + job.id"
+                          label="View Details"
+                          buttonType="btn btn-outline-primary btn-sm"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="text-center mt-4">
+              <Button
+                @click.stop="loadMoreJobs"
+                label="Load More"
+                buttonType="btn btn-outline-primary"
+              />
             </div>
           </section>
         </div>
@@ -161,6 +184,7 @@ import { useJobsStore } from "@/stores/jobs";
 import Sidebar from "@/components/Sidebar.vue";
 import Button from "@/components/Button.vue";
 import Navbar from "@/components/Navbar.vue";
+import { useRouter } from 'vue-router';
 
 export default {
   name: "Home",
@@ -179,11 +203,11 @@ export default {
         education: "",
         jobType: "",
       },
-      // Controls if the mobile filter menu is showing or not
       showMobileFilters: false,
       isScrolled: false,
-      showSearchFilters: false, 
-      defaultCompanyLogo: '/images/dashboard-default.svg',
+      showSearchFilters: false,
+      defaultCompanyLogo: "/images/dashboard-default.svg",
+      jobsToShow: 10,
     };
   },
   computed: {
@@ -192,15 +216,18 @@ export default {
     },
     // Gets the newest jobs
     latestJobs() {
-      return this.jobsStore.getLatestJobs();
+      return this.jobsStore.getLatestJobs().slice(0, this.jobsToShow);
     },
   },
   methods: {
     // search button find jobs!
     handleSearch() {
-      this.jobsStore.searchFilters = { ...this.searchFilters };
-      this.jobsStore.filterJobs();
-      this.$router.push("/jobs");
+      try {
+        this.jobsStore.searchFilters = { ...this.searchFilters };
+        this.jobsStore.filterJobs();
+        this.router.push("/jobs");
+      } catch (error) {
+      }
     },
     // Handles the mobile filter menu submission
     applyMobileFilters() {
@@ -241,7 +268,11 @@ export default {
       }
     },
     toggleSearchFilters() {
-      this.showSearchFilters = !this.showSearchFilters; 
+      this.showSearchFilters = !this.showSearchFilters;
+    },
+    loadMoreJobs() {
+      this.jobsToShow += 5;
+      console.log("Jobs to show:", this.jobsToShow);
     },
   },
   mounted() {
@@ -251,7 +282,6 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   setup() {
-    // Gets everything ready when the page loads
     const jobsStore = useJobsStore();
     jobsStore.initializeJobs();
     return {

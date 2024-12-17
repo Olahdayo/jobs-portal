@@ -57,7 +57,6 @@ export const useJobsStore = defineStore('jobs', {
     getLatestJobs() {
       return [...this.jobs]
         .sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate))
-        .slice(0, 30)
     }
   }
 }) 
