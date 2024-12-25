@@ -44,10 +44,17 @@ const router = createRouter({
       name: "FeaturedJobs",
       component: () => import("../views/FeaturedJobs.vue"),
     },
+
+    {
+      path: "/Joblistings",
+      name: "Joblistings",
+      component: () => import("@/views/JobListings.vue"),
+    },
+
     {
       path: "/jobs/:id",
       name: "JobDetails",
-      component: () => import("@/views/JobDetails.vue"), // Adjust the path as necessary
+      component: () => import("@/views/JobDetails.vue"), 
     },
     {
       path: "/jobs/state/:state",

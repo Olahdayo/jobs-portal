@@ -76,7 +76,9 @@
                       <div class="d-flex align-items-start gap-3">
                         <img
                           :src="
-                            job.companyLogo ? job.companyLogo : defaultCompanyLogo
+                            job.companyLogo
+                              ? job.companyLogo
+                              : defaultCompanyLogo
                           "
                           alt="Company Logo"
                           class="company-logo flex-shrink-0"
@@ -96,7 +98,7 @@
                           </div>
                         </div>
                       </div>
-                      </router-link>
+                    </router-link>
                   </div>
                 </div>
               </div>
@@ -142,7 +144,7 @@
                           job.type
                         }}</span>
                         <span class="badge bg-light text-dark"
-                          >{{ job.salary }}/year</span
+                          >{{ job.salary }}/month</span
                         >
                       </div>
                       <div class="mt-3">
@@ -159,7 +161,7 @@
             </div>
             <div class="text-center mt-4">
               <Button
-                @click.stop="loadMoreJobs"
+                to="/JobListings"
                 label="Load More"
                 buttonType="btn btn-outline-primary"
               />
@@ -186,7 +188,7 @@ import { useJobsStore } from "@/stores/jobs";
 import Sidebar from "@/components/Sidebar.vue";
 import Button from "@/components/Button.vue";
 import Navbar from "@/components/Navbar.vue";
-import { useRouter } from 'vue-router';
+// import { useRouter } from "vue-router";
 
 export default {
   name: "Home",
@@ -228,8 +230,7 @@ export default {
         this.jobsStore.searchFilters = { ...this.searchFilters };
         this.jobsStore.filterJobs();
         this.router.push("/jobs");
-      } catch (error) {
-      }
+      } catch (error) {}
     },
     // Handles the mobile filter menu submission
     applyMobileFilters() {
@@ -271,10 +272,6 @@ export default {
     },
     toggleSearchFilters() {
       this.showSearchFilters = !this.showSearchFilters;
-    },
-    loadMoreJobs() {
-      this.jobsToShow += 5;
-      console.log("Jobs to show:", this.jobsToShow);
     },
   },
   mounted() {
@@ -330,12 +327,12 @@ export default {
 }
 
 .hero-overlay {
-  position: absolute; 
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(22, 60, 104, 0.9); 
+  background-color: rgba(22, 60, 104, 0.9);
 }
 
 .hero-section .container {
@@ -453,7 +450,6 @@ html {
   background: #e9ecef;
 }
 
-
 .featured-jobs-container {
   border: 1px solid #e5e5e5;
 }
@@ -494,20 +490,20 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); 
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; 
+  z-index: 1000;
 }
 
 .job-card a {
-  text-decoration: none; 
-  color: #000; 
+  text-decoration: none;
+  color: #000;
 }
 
 .job-card a:hover {
-  color: #000; 
+  color: #000;
 }
 
 @media (max-width: 991.98px) {
@@ -516,7 +512,7 @@ html {
     max-height: none;
     margin-top: 2rem;
   }
-    .search-section {
+  .search-section {
     margin-top: 56px;
   }
   .search-section.sticky-top {
